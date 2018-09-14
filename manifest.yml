@@ -1,0 +1,50 @@
+---
+applications:
+
+  - name: verify-service-provider
+    buildpack: java_buildpack
+    path: out/releases/verify-service-provider.zip
+    command: verify-service-provider-1.0.0/bin/verify-service-provider server verify-service-provider-1.0.0/verify-service-provider.yml
+    routes:
+      - route: verify-service-provider-0.apps.internal
+    env:
+      JAVA_HOME: .java-buildpack/open_jdk_jre
+      CLOCK_SKEW: PT30s
+      SERVICE_ENTITY_IDS: '["http://verify-service-provider-0"]'
+      VERIFY_ENVIRONMENT: COMPLIANCE_TOOL
+      MSA_ENTITY_ID: 'https://verify-matching-service-adapter-0'
+      MSA_METADATA_URL: 'https://verify-matching-service-adapter-0.cloudapps.digital/matching-service/SAML2/metadata'
+      SAML_SIGNING_KEY: ((VSP_SAML_SIGNING_KEY))
+      SAML_PRIMARY_ENCRYPTION_KEY: ((VSP_SAML_PRIMARY_ENCRYPTION_KEY))
+
+  - name: verify-matching-service-adapter
+    buildpack: java_buildpack
+    path: out/hacks/verify-matching-service-adapter-custom-config.zip
+    command: verify-matching-service-adapter-3.1.0-unspecified/bin/verify-matching-service-adapter server verify-matching-service-adapter.yml
+    routes:
+      - route: verify-matching-service-adapter-0.cloudapps.digital
+    env:
+      JAVA_HOME: .java-buildpack/open_jdk_jre
+      MSA_PRIMARY_SAML_SIGNING_KEY: ((MSA_PRIMARY_SAML_SIGNING_KEY))
+      MSA_PRIMARY_SAML_SIGNING_CERT: ((MSA_PRIMARY_SAML_SIGNING_CERT))
+      MSA_PRIMARY_SAML_ENCRYPTION_KEY: ((MSA_PRIMARY_SAML_ENCRYPTION_KEY))
+      MSA_PRIMARY_SAML_ENCRYPTION_CERT: ((MSA_PRIMARY_SAML_ENCRYPTION_CERT))
+
+  - name: passport-verify-stub-relying-party
+    buildpack: nodejs_buildpack
+    path: out/hacks/passport-verify-stub-relying-party/package
+    routes:
+      - route: passport-verify-stub-relying-party-0.cloudapps.digital
+    env:
+      VERIFY_SERVICE_PROVIDER_HOST: http://verify-service-provider-0.apps.internal:8080
+    services:
+      - stub-relying-party-db
+
+  - name: verify-local-matching-service-example
+    buildpack: java_buildpack
+    path: out/releases/verify-local-matching-service-example.zip
+    routes:
+      - route: verify-local-matching-service-example-0.apps.internal
+    services:
+      - stub-relying-party-db
+

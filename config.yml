@@ -1,0 +1,56 @@
+---
+applications:
+
+  - name: verify-service-provider
+    url: https://github.com/alphagov/verify-service-provider/releases/download/1.0.0/verify-service-provider-1.0.0.zip
+    filename: verify-service-provider.zip
+    checksum: 5b25ed27423b2afe1414ae43c8bc58769e7060efeae114826f67d038b632fafe
+    vars_file:
+      filename: vsp-vars.yml
+      items:
+        - key:
+            variable: VSP_SAML_SIGNING_KEY
+            filename: vsp-saml-signing-key.pk8
+        - key:
+            variable: VSP_SAML_PRIMARY_ENCRYPTION_KEY
+            filename: vsp-saml-encryption-key.pk8
+
+  - name: verify-matching-service-adapter
+    url: https://github.com/richardTowers/verify-matching-service-adapter/releases/download/HACK/verify-matching-service-adapter-3.1.0-unspecified.zip
+    filename: verify-matching-service-adapter.zip
+    checksum: 24dff22ac0b2581a456891fe7c338cf35abe24c0b2ec7e7cc03c2d5bfe8cc065
+    vars_file:
+      filename: msa-vars.yml
+      items:
+        - key:
+            variable: MSA_PRIMARY_SAML_SIGNING_KEY
+            filename: msa-primary-saml-signing-key.pk8
+          certificate:
+            variable: MSA_PRIMARY_SAML_SIGNING_CERT
+            filename: msa-primary-saml-signing-cert.pem
+        - key:
+            variable: MSA_PRIMARY_SAML_ENCRYPTION_KEY
+            filename: msa-primary-saml-encryption-key.pk8
+          certificate:
+            variable: MSA_PRIMARY_SAML_ENCRYPTION_CERT
+            filename: msa-primary-saml-encryption-cert.pem
+    hacks:
+      # See the code in lib/hacks.rb
+      - method: add_custom_msa_config_and_truststore_to_zip
+        filename: verify-matching-service-adapter-custom-config.zip
+
+  - name: verify-local-matching-service-example
+    url: https://github.com/alphagov/verify-local-matching-service-example/releases/download/0.0.1/verify-local-matching-service-example.zip
+    filename: verify-local-matching-service-example.zip
+    checksum: f1481e1cdb96eff975eae6733f35346c5a1902e60d3b7d026ed6be66a1cb9420
+
+  - name: passport-verify-stub-relying-party
+    url: https://github.com/alphagov/passport-verify-stub-relying-party/releases/download/1.0.0/passport-verify-stub-relying-party-1.0.0.tgz
+    filename: passport-verify-stub-relying-party.tar.gz
+    checksum: 9b3bf3ef3ffd384a2272cf27f016dbe8f3b6d6540ffc64389295d693362ff442
+    hacks:
+      - method: untar_passport_verify_stub_relying_party
+        filename: passport-verify-stub-relying-party
+      - method: bodge_node_version
+        filename: passport-verify-stub-relying-party/package/package.json
+

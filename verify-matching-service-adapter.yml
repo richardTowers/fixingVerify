@@ -1,0 +1,51 @@
+server:
+  applicationConnectors:
+    - type: http
+      port: 8080
+  adminConnectors:
+    - type: http
+      port: 8081
+
+logging:
+  level: ${LOG_LEVEL:-INFO}
+  appenders:
+    - type: console
+      logFormat: '%-5p [%d{ISO8601,UTC}] %c: %X{logPrefix}%m%n%xEx'
+
+matchingServiceAdapter:
+  entityId: https://verify-matching-service-adapter-0
+  externalUrl: https://verify-matching-service-adapter-0.cloudapps.digital/matching-service/POST
+
+localMatchingService:
+  matchUrl: http://verify-local-matching-service-example-0.apps.internal:8080/match-user
+  accountCreationUrl: http://verify-local-matching-service-example-0.apps.internal:8080/create-user
+
+signingKeys:
+  primary:
+    publicKey:
+      type: encoded
+      cert: ${MSA_PRIMARY_SAML_SIGNING_CERT}
+      name: signing.primary.crt
+    privateKey:
+      type: encoded
+      key: ${MSA_PRIMARY_SAML_SIGNING_KEY}
+
+encryptionKeys:
+  - publicKey:
+      type: encoded
+      cert: ${MSA_PRIMARY_SAML_ENCRYPTION_CERT}
+      name: encryption.primary.crt
+    privateKey:
+      type: encoded
+      key: ${MSA_PRIMARY_SAML_ENCRYPTION_KEY}
+
+hub:
+  ssoUrl: https://www.integration.signin.service.gov.uk/SAML2/SSO
+
+metadata:
+  environment: INTEGRATION
+  url: https://www.integration.signin.service.gov.uk/SAML2/metadata/federation
+  trustStore:
+    path: test_ida_metadata.ts
+    password: puppet
+
