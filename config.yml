@@ -11,9 +11,15 @@ applications:
         - key:
             variable: VSP_SAML_SIGNING_KEY
             filename: vsp-saml-signing-key.pk8
+          certificate:
+            variable: VSP_SAML_SIGNING_CERT
+            filename: vsp-saml-signing-cert.pem
         - key:
             variable: VSP_SAML_PRIMARY_ENCRYPTION_KEY
             filename: vsp-saml-encryption-key.pk8
+          certificate:
+            variable: VSP_SAML_ENCRYPTION_CERT
+            filename: vsp-saml-encryption-cert.pem
 
   - name: verify-matching-service-adapter
     url: https://github.com/richardTowers/verify-matching-service-adapter/releases/download/HACK/verify-matching-service-adapter-3.1.0-unspecified.zip
